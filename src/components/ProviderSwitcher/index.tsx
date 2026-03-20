@@ -38,13 +38,21 @@ const ConfigItem = memo(function ConfigItem({ config, isActive, onSelect }: Conf
   )
 })
 
-export function ProviderSwitcher() {
-  const router = useRouter()
-  const apiKeyConfigs = useModelStore((s) => s.apiKeyConfigs)
-  const activeApiKeyId = useModelStore((s) => s.activeApiKeyId)
-  const setActiveApiKey = useModelStore((s) => s.setActiveApiKey)
-  const { loading } = useApiKey()
+interface ProviderSwitcherMenuProps {
+  apiKeyConfigs: ApiKeyConfig[]
+  activeApiKeyId: string | null
+  loading: boolean
+  onSelect: (id: string) => void
+  onManage: () => void
+}
 
+export function ProviderSwitcherMenu({
+  apiKeyConfigs,
+  activeApiKeyId,
+  loading,
+  onSelect,
+  onManage,
+}: ProviderSwitcherMenuProps) {
   const activeConfig = apiKeyConfigs.find((c) => c.id === activeApiKeyId)
   const hasConfigs = apiKeyConfigs.length > 0
 
@@ -64,15 +72,29 @@ export function ProviderSwitcher() {
 
   if (!hasConfigs) {
     return (
-      <Button
-        disabled
-        variant="ghost"
-        size="sm"
-        className="gap-1.5 rounded-md px-2 text-muted-foreground opacity-50"
-      >
-        <Server className="h-4 w-4" />
-        <span>未配置厂商</span>
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5 rounded-md px-2 text-muted-foreground hover:text-foreground"
+            title="添加 API Key"
+          >
+            <Server className="h-4 w-4" />
+            <span>未配置厂商</span>
+            <ChevronDown className="h-3.5 w-3.5 flex-shrink-0" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="min-w-[180px] bg-popover border-border">
+          <DropdownMenuItem
+            onClick={onManage}
+            className="cursor-pointer text-popover-foreground hover:bg-primary hover:text-primary-foreground"
+          >
+            <KeyRound className="mr-2 h-4 w-4" />
+            添加 API Key
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     )
   }
 
@@ -98,12 +120,12 @@ export function ProviderSwitcher() {
             key={config.id}
             config={config}
             isActive={config.id === activeApiKeyId}
-            onSelect={setActiveApiKey}
+            onSelect={onSelect}
           />
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => router.push('/settings/api-keys')}
+          onClick={onManage}
           className="cursor-pointer text-popover-foreground hover:bg-primary hover:text-primary-foreground"
         >
           <KeyRound className="mr-2 h-4 w-4" />
@@ -111,5 +133,23 @@ export function ProviderSwitcher() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+export function ProviderSwitcher() {
+  const router = useRouter()
+  const apiKeyConfigs = useModelStore((s) => s.apiKeyConfigs)
+  const activeApiKeyId = useModelStore((s) => s.activeApiKeyId)
+  const setActiveApiKey = useModelStore((s) => s.setActiveApiKey)
+  const { loading } = useApiKey()
+
+  return (
+    <ProviderSwitcherMenu
+      apiKeyConfigs={apiKeyConfigs}
+      activeApiKeyId={activeApiKeyId}
+      loading={loading}
+      onSelect={setActiveApiKey}
+      onManage={() => router.push('/settings/api-keys')}
+    />
   )
 }

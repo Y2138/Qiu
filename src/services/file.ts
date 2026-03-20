@@ -1,4 +1,5 @@
 import type { UploadedFile, FileUploadProgress, FileType } from '@/types/file'
+import { generateId } from '@/utils/helpers'
 
 const API_BASE = '/api/files'
 
@@ -65,7 +66,7 @@ export async function uploadFile(
   options?: { sessionId?: string },
   onProgress?: (progress: FileUploadProgress) => void
 ): Promise<UploadedFile> {
-  const fileId = crypto.randomUUID()
+  const fileId = generateId()
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()

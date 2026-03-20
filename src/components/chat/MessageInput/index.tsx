@@ -4,7 +4,7 @@ import { memo, useCallback, useRef, useState } from "react";
 import { CheckCircle2, ChevronDown, LoaderCircle, Paperclip, Send, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/common/Button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/common/Dropdown";
-import { cn } from "@/utils/helpers";
+import { cn, generateId } from "@/utils/helpers";
 import { uploadFile, validateFile } from "@/services/file";
 import type { Model } from "@/types/model";
 import type { FileAttachment } from "@/types/chat";
@@ -83,7 +83,7 @@ function MessageInputInner({
           continue;
         }
 
-        const placeholderId = crypto.randomUUID();
+        const placeholderId = generateId();
         setAttachments((current) => [
           ...current,
           {

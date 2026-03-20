@@ -49,7 +49,12 @@ export function truncateText(text: string, maxLength: number): string {
 }
 
 export function generateId(): string {
-  return crypto.randomUUID()
+  const maybeCrypto = globalThis.crypto as Crypto | undefined
+  if (typeof maybeCrypto?.randomUUID === 'function') {
+    return maybeCrypto.randomUUID()
+  }
+
+  return `id_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`
 }
 
 export function debounce<T extends (...args: unknown[]) => unknown>(

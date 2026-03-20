@@ -9,6 +9,7 @@ import { useSettingsStore } from '@/stores/settingsStore'
 import { generateSessionTitle, getMessagesBySession } from '@/services/session'
 import { createStreamService, type StreamService } from '@/services/stream'
 import { updateAssistantPartsFromStreamEvent } from '@/lib/agent/message-parts'
+import { generateId } from '@/utils/helpers'
 import type {
   AgentRuntimeRequest,
   AssistantMessagePart,
@@ -331,7 +332,7 @@ export function useChat(): UseChatReturn {
       }
 
       const assistantMessage: Message = {
-        id: crypto.randomUUID(),
+        id: generateId(),
         sessionId: activeSessionId,
         role: 'assistant',
         content: '',
@@ -489,7 +490,7 @@ export function useChat(): UseChatReturn {
   const sendMessage = useCallback(
     async (content: string, files?: FileAttachment[], agentConfig?: AgentRuntimeRequest) => {
       const userMessage: Message = {
-        id: crypto.randomUUID(),
+        id: generateId(),
         sessionId: activeSessionId ?? '',
         role: 'user',
         content,
