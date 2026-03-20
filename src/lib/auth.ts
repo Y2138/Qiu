@@ -12,6 +12,12 @@ const LEGACY_ACCESS_COOKIE_NAME = 'accessToken';
 const LEGACY_REFRESH_COOKIE_NAME = 'refreshToken';
 const COOKIE_MAX_AGE = 7 * 24 * 60 * 60; // 7 days
 
+function isSecureCookieEnabled(): boolean {
+  if (process.env.COOKIE_SECURE === 'true') return true;
+  if (process.env.COOKIE_SECURE === 'false') return false;
+  return process.env.NODE_ENV === 'production';
+}
+
 // 密码工具
 export async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(10);
@@ -50,7 +56,7 @@ export async function setAuthCookie(token: string) {
   const cookieStore = await cookies();
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: isSecureCookieEnabled(),
     sameSite: 'lax',
     maxAge: COOKIE_MAX_AGE,
     path: '/',

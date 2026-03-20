@@ -128,12 +128,14 @@ DATABASE_URL=postgresql://user:password@localhost:5432/qiuchat?schema=public
 REDIS_URL=redis://:redis123@localhost:6379
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 JWT_EXPIRES_IN=7d
+COOKIE_SECURE=false
 ENCRYPTION_KEY=replace-with-64-char-hex-key
 MCP_SERVERS_JSON=
 AGENT_DIAGNOSTICS_TOKEN=
 ```
 
 说明：
+- `COOKIE_SECURE=false` 适合当前通过 IP + HTTP 临时访问；后续切到 HTTPS 后建议改为 `true`
 - `ENCRYPTION_KEY` 用于加密用户保存的 API Key
 - `MCP_SERVERS_JSON` 用于配置 MCP Servers
 - `AGENT_DIAGNOSTICS_TOKEN` 用于 MCP 诊断接口
